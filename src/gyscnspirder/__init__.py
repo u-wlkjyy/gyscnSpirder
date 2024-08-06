@@ -63,22 +63,20 @@ class Spider:
         self.save_font_image()
         self.ocr_font()
 
-    """
-        destroy Spider instance, delete all cache files
-    """
-
     def __del__(self):
+        """
+        destroy Spider instance, delete all cache files
+        """
         for root, dirs, files in os.walk(IMAGE_CACHE_PATH):
             for file in files:
                 os.remove(os.path.join(root, file))
         os.remove(self.font_cache_name)
         return
 
-    """
-        get response from the url
-    """
-
     def get_response(self):
+        """
+        get response from the url
+        """
         response = requests.get(self.url, headers=self.headers)
         response.encoding = response.apparent_encoding
         self.response = response.text
@@ -87,17 +85,14 @@ class Spider:
                 "The website is protected by anti-spider, please try again later or use a proxy"
             )
 
-    """
-        from html response, get the font base64 string
-    """
-
     def get_font(self):
+        """
+        from html response, get the font base64 string
+        """
         if os.path.exists(self.font_cache_name):
             os.remove(self.font_cache_name)
 
-        """
-            from the response, get the font base64 string
-        """
+        # from the response, get the font base64 string
         font_pre = self.response.split(
             "@font-face{font-family:'icomoon';src:url('data:application/font-ttf;charset=utf-8;base64,"
         )
@@ -108,21 +103,19 @@ class Spider:
 
         return True
 
-    """
-        parse the font file, get the real character
-    """
-
     def font_parse(self):
+        """
+        parse the font file, get the real character
+        """
         self.font_parse_data = ImageFont.truetype(self.font_cache_name, 40)
         self.font_parse_uni = TTFont(self.font_cache_name)
         uni_map = self.font_parse_uni["cmap"].tables[0].ttFont.getBestCmap()
         self.uniMap = {hex(k): v for k, v in uni_map.items()}
 
-    """
-        save the font image to the cache directory
-    """
-
     def save_font_image(self):
+        """
+        save the font image to the cache directory
+        """
         font = self.font_parse_uni
         for k, v in self.uniMap.items():
             pen = FreeTypePen(None)
@@ -145,20 +138,17 @@ class Spider:
 
             single_font_image = np.array(single_font_image) * 255
 
-            """
-                from black convert to white background
-            """
+            # from black convert to white background
             single_font_image = 255 - single_font_image
 
             single_font_image = Image.fromarray(single_font_image)
             single_font_image = single_font_image.convert("L")
             single_font_image.save("{}{}.jpg".format(IMAGE_CACHE_PATH, k))
 
-    """
-        ocr the font image, get the real character
-    """
-
     def ocr_font(self):
+        """
+        ocr the font image, get the real character
+        """
         ocr = self.ddddocr
         for k, v in self.uniMap.items():
             file = "{}{}.jpg".format(IMAGE_CACHE_PATH, k)
@@ -167,11 +157,10 @@ class Spider:
                 res = "-"
             self.font_ocr_real[v] = res
 
-    """
-        get the phone number from the response, and convert the font character to real character
-    """
-
     def get_phone(self):
+        """
+        get the phone number from the response, and convert the font character to real character
+        """
         phone = re.findall(r'<span class="rrdh secret">(.*?)</span>', self.response)
         phone = phone[0]
         phone = phone.split(";")
@@ -183,11 +172,10 @@ class Spider:
             real_phone += self.font_ocr_real[i]
         return real_phone
 
-    """
-        get the name, address, firm, phone from the response
-    """
-
     def get_information(self):
+        """
+        get the name, address, firm, phone from the response
+        """
         try:
             tree = etree.HTML(self.response)
             name = tree.xpath('//span[@class="xqrm"]/text()')[0].strip()
@@ -197,5 +185,5 @@ class Spider:
             ]
             phone = self.get_phone()
             return name, addr, firm, phone
-        except Exception as e:
+        except Exception:
             return None, None, None, None
