@@ -74,8 +74,11 @@ class Spider:
         """
         for root, dirs, files in os.walk(IMAGE_CACHE_PATH):
             for file in files:
-                os.remove(os.path.join(root, file))
-        os.remove(self.font_cache_name)
+                fpath = os.path.join(root, file)
+                if os.path.isfile(fpath):
+                    os.remove(fpath)
+        if os.path.isfile(self.font_cache_name):
+            os.remove(self.font_cache_name)
         return
 
     def get_response(self, timeout=None):
