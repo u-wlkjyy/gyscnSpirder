@@ -70,6 +70,7 @@ class Spider:
         self.font_parse()
         self.save_font_image()
         self.ocr_font()
+        return self
 
     def __exit__(self, _type, _val, _tb):
         """
