@@ -91,7 +91,7 @@ class Spider:
         response = requests.get(self.url, headers=self.headers, timeout=self.timeout)
         response.encoding = response.apparent_encoding
         self.response = response.text
-        if "访问验证" in self.response:
+        if "访问有异常" in self.response:
             raise BlockedException(
                 "The website is protected by anti-spider, please try again later or use a proxy"
             )
