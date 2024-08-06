@@ -163,7 +163,8 @@ class Spider:
         ocr = self.ddddocr
         for k, v in self.uniMap.items():
             file = "{}{}.jpg".format(IMAGE_CACHE_PATH, k)
-            res = ocr.classification(open(file, "rb").read())
+            with open(file, "rb") as classi:
+                res = ocr.classification(classi.read())
             if res == "":
                 res = "-"
             self.font_ocr_real[v] = res
