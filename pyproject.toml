@@ -3,7 +3,15 @@ name = "gyscnSpirder"
 version = "0.1.0"
 description = "供应商网爬虫"
 authors = [{ name = "u-wlkjyy", email = "wlkjyy@vip.qq.com" }]
-dependencies = ["fontTools", "Pillow", "ddddocr", "lxml", "requests", "numpy"]
+dependencies = [
+    "fontTools",
+    "Pillow<10.0",
+    "ddddocr",
+    "lxml",
+    "requests",
+    "numpy",
+    "freetype-py>=2.4.0",
+]
 requires-python = ">=3.8"
 readme = "README.md"
 license = { text = "Unknown" }
