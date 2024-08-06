@@ -50,9 +50,10 @@ pip3 install -r requirements.txt - https://pypi.tuna.tsinghua.edu.cn/simple
 ## 使用示例
 
 ```python
-from Spider import Spider
+from gyscnspirder import Spider
 
-name, addr, firm, phone = Spider('https://shanghaiouxin.gys.cn/contact-information/', ).get_information()
+with Spider('https://shanghaiouxin.gys.cn/contact-information/') as sp:
+    name, addr, firm, phone = sp.get_information()
 ```
 
 

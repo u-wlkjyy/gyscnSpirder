@@ -62,13 +62,16 @@ class Spider:
         self.url = url
         self.font_cache_name = hashlib.md5(url.encode()).hexdigest()
         self.font_cache_name = "{}.ttf".format(FONT_CACHE_PATH + self.font_cache_name)
-        self.get_response(timeout=timeout)
+        self.timeout = timeout
+
+    def __enter__(self):
+        self.get_response()
         self.get_font()
         self.font_parse()
         self.save_font_image()
         self.ocr_font()
 
-    def __del__(self):
+    def __exit__(self, _type, _val, _tb):
         """
         destroy Spider instance, delete all cache files
         """
@@ -81,11 +84,11 @@ class Spider:
             os.remove(self.font_cache_name)
         return
 
-    def get_response(self, timeout=None):
+    def get_response(self):
         """
         get response from the url
         """
-        response = requests.get(self.url, headers=self.headers, timeout=timeout)
+        response = requests.get(self.url, headers=self.headers, timeout=self.timeout)
         response.encoding = response.apparent_encoding
         self.response = response.text
         if "访问验证" in self.response:
