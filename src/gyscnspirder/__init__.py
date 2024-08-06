@@ -28,6 +28,10 @@ if not os.path.exists(IMAGE_CACHE_PATH):
     os.mkdir(IMAGE_CACHE_PATH)
 
 
+class BlockedException(Exception):
+    pass
+
+
 class Spider:
     url = None
     response = None
@@ -81,7 +85,7 @@ class Spider:
         response.encoding = response.apparent_encoding
         self.response = response.text
         if "访问验证" in self.response:
-            raise Exception(
+            raise BlockedException(
                 "The website is protected by anti-spider, please try again later or use a proxy"
             )
 
