@@ -2,6 +2,7 @@ import re
 import base64
 import hashlib
 import os
+from typing import Union, Tuple
 
 from fontTools.ttLib import TTFont
 from fontTools.pens.freetypePen import FreeTypePen
@@ -56,12 +57,12 @@ class Spider:
         "Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0",
     }
 
-    def __init__(self, url):
+    def __init__(self, url, timeout: Union[float, Tuple[float, float], None] = None):
         self.ddddocr = _ddddocr
         self.url = url
         self.font_cache_name = hashlib.md5(url.encode()).hexdigest()
         self.font_cache_name = "{}.ttf".format(FONT_CACHE_PATH + self.font_cache_name)
-        self.get_response()
+        self.get_response(timeout=timeout)
         self.get_font()
         self.font_parse()
         self.save_font_image()
@@ -77,11 +78,11 @@ class Spider:
         os.remove(self.font_cache_name)
         return
 
-    def get_response(self):
+    def get_response(self, timeout=None):
         """
         get response from the url
         """
-        response = requests.get(self.url, headers=self.headers)
+        response = requests.get(self.url, headers=self.headers, timeout=timeout)
         response.encoding = response.apparent_encoding
         self.response = response.text
         if "访问验证" in self.response:
