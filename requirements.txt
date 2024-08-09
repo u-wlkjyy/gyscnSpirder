@@ -1,6 +1,0 @@
-fontTools
-Pillow
-ddddocr
-lxml
-requests
-numpy

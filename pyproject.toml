@@ -1,0 +1,25 @@
+[project]
+name = "gyscnSpirder"
+version = "0.1.0"
+description = "供应商网爬虫"
+authors = [{ name = "u-wlkjyy", email = "wlkjyy@vip.qq.com" }]
+dependencies = [
+    "fontTools",
+    "Pillow<10.0",
+    "ddddocr",
+    "lxml",
+    "requests",
+    "numpy",
+    "freetype-py>=2.4.0",
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = { text = "Unknown" }
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.pdm]
+distribution = true
